@@ -635,6 +635,32 @@ railway logs</pre>
 </div>
 
 <script>
+// At the top of your <script> block in each HTML file:
+const API_BASE = 'https://panalo-backend-production.up.railway.app/api/';
+
+// Replace all direct data with real API calls. Example:
+async function loadTasks() {
+  const token = localStorage.getItem('panalo_token');
+  const res = await fetch(`${API_BASE}/tasks`, {
+    headers: { 'Authorization': `Bearer ${token}` }
+  });
+  const { tasks } = await res.json();
+  renderTaskList(tasks);
+}
+
+// Auth example:
+async function doLogin(email, password) {
+  const res = await fetch(`${API_BASE}/auth/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password })
+  });
+  const { accessToken, refreshToken, user } = await res.json();
+  localStorage.setItem('panalo_token', accessToken);
+  localStorage.setItem('panalo_refresh', refreshToken);
+  return user;
+}
+
 function copyCode(btn) {
   const pre = btn.closest('.code-block').querySelector('pre');
   navigator.clipboard.writeText(pre.textContent).then(() => {
